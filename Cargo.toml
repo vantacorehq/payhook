@@ -5,8 +5,7 @@ edition = "2021"
 description = "Webhook engine for Stripe / Crypto / TON / USDT. HMAC verification, replay protection, guaranteed retries. Pure Rust."
 license = "MIT"
 repository = "https://github.com/vantacorehq/payhook"
-keywords = ["webhook", "payments", "hmac", "stripe", "crypto"]
-categories = ["web-programming", "authentication"]
+keywords = ["webhook", "stripe", "payments", "hmac", "idempotency", "zero-dependency"]
+categories = ["web-programming", "network-programming"]
 
 [dependencies]
-# zero dependencies

@@ -1,12 +1,17 @@
 # payhook
 
-Webhook reception and verification engine.
+**Webhook engine for Stripe / Crypto / TON / USDT.**
 
-Pure Rust. Zero dependencies.
+HMAC verification · Replay protection · Guaranteed retries · Pure Rust · Zero dependencies
 
-## What it solves
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+---
+
+## The problem
 
 When servers crash or webhooks are retried:
+
 - Payments are lost
 - Payments are applied twice
 - Replay attacks succeed
@@ -14,42 +19,53 @@ When servers crash or webhooks are retried:
 
 ## Features
 
-- Strict HMAC-SHA256 verification (Stripe-style and custom)
-- Replay protection (timestamp + nonce window)
-- Idempotency keys
-- Guaranteed retry queue with exponential backoff
-- Dead-letter after max attempts
-- Audit of every decision
+| Feature | Description |
+|---------|-------------|
+| Strict HMAC | Stripe-style + custom secrets |
+| Replay protection | Timestamp + nonce window |
+| Idempotency keys | Process exactly once |
+| Retry queue | Exponential backoff |
+| Dead-letter | After max attempts |
+| Full audit | Every decision logged |
+| Zero deps | Only `std` |
 
-## Usage
+## Quick start
+
+```toml
+[dependencies]
+payhook = { git = "https://github.com/vantacorehq/payhook" }
+```
 
 ```rust
 use payhook::{Verifier, Webhook};
 
-let verifier = Verifier::new(b"whsec_live_...");
+fn main() {
+    let verifier = Verifier::new(b"whsec_live_...");
 
-let webhook = Webhook {
-    payload: body.as_bytes(),
-    signature: header_sig,
-    timestamp: header_ts,
-    nonce: header_nonce,
-};
+    let webhook = Webhook {
+        payload: b"{...}",
+        signature: "t=...,v1=...".into(),
+        timestamp: 1732000000,
+        nonce: Some("n-123".into()),
+    };
 
-match verifier.verify(&webhook) {
-    Ok(()) => {
-        // process once (idempotent)
-    }
-    Err(e) => {
-        // reject and optionally enqueue for retry
+    match verifier.verify(&webhook) {
+        Ok(()) => {
+            // process once (idempotent)
+        }
+        Err(e) => {
+            // reject / enqueue for retry
+            eprintln!("{:?}", e);
+        }
     }
 }
 ```
 
 ## Commercial
 
-Integration of the payment core (Stripe + crypto + TON/USDT): $600–$2000.
+Integration of the payment core (Stripe + crypto + TON/USDT): **$600 – $2 000**.
 
-Pairs well with vantacorehq/gridlock and vantacorehq/folio.
+Pairs well with `gridlock` and `folio`.
 
 ## License
 

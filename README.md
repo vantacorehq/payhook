@@ -61,12 +61,6 @@ fn main() {
 }
 ```
 
-## Commercial
-
-Integration of the payment core (Stripe + crypto + TON/USDT): **$600 – $2 000**.
-
-Pairs well with `gridlock` and `folio`.
-
 ## License
 
 MIT
